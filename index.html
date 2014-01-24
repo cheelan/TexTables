@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+</head>
+<body>
+	<h2>Paste Delimited Data</h2>
+	Column Delimiter: <input id="delimiter" value=","/>
+	<div contenteditable="true" class="output" id="delimitedTable">
+<pre>
+I'm editable,I'm also editable
+I'm editable,I'm also editable
+</pre>
+	</div>
+
+	<h2>Edit Table Graphically</h2>
+	Border:
+	<select id="borderSelect">
+	    <option value="" selected="selected">No Border</option>
+	    <option value="border_around">Borders Around</option>
+	    <option value="all_borders">All Borders</option>
+	</select>
+	<table class="graphical">
+	<tr>
+		<td><div contenteditable>I'm editable</div></td>
+		<td><div contenteditable>I'm also editable</div></td>
+	</tr>
+		<tr>
+		<td><div contenteditable>I'm editable</div></td>
+		<td><div contenteditable>I'm also editable</div></td>
+	</tr>
+	</table>
+
+	<h2>Convert to LaTex</h2>
+	<div contenteditable="true" class="output" id="latexTable">
+<pre>
+\begin{table}
+    \begin{tabular}{ll}
+    I'm editable & I'm also editable \\
+    I'm editable & I'm also editable \\
+    \end{tabular}
+\end{table}
+</pre>
+
+	</div>
+
+Extra functions: Transpose table
+
+</body>
+</html>
+
+<script type='text/javascript'>
+function delimitedToTex(table, delimiter, style) {
+	rows = table.split('\n');
+	rows.splice(-1,1);
+	console.log(rows)
+	ls = '';
+	cols = 0;
+
+	border = "";
+	//Get delimiter
+	//TODO Check data is formatted correctly
+	texRows = new Array();
+	for (var i=0; i<rows.length; i++) {
+		elements = rows[i].split(delimiter);
+		//console.log(elements);
+		texRow = ""
+		cols = 0;
+		for (var j=0; j<elements.length; j++) {
+			texRow += elements[j] + ' & ';
+			cols++;
+		}
+		texRow = texRow.substring(0, texRow.length - 2);
+		texRow += "\\\\"
+		if (style=="all_borders") {
+			texRow += ' \\hline';
+		}
+		
+		
+		console.log(texRow);
+		texRows.push(texRow);
+	}
+	for (var i=0; i<cols; i++) {
+		if (style == "all_borders") {
+			ls += 'l|';
+		}
+		else {
+			ls += 'l';
+		}
+	}
+	console.log(style);
+	if (style == "border_around") {
+		console.log("ASAD");
+		ls = "|" + ls +"|";
+	}
+	if (style == "all_borders") {
+		ls = ("|" + ls);
+	}
+
+	texTable = "\\begin{table}\n\t\\begin{tabular}{" + ls + "}\n";
+	if (style == "border_around") {
+		texTable += "\t \\hline \n";
+	}
+	for (var i=0; i<texRows.length; i++) {
+		texTable += '\t' + texRows[i] + '\n';
+	}
+	if (style == "border_around") {
+		texTable += "\t \\hline \n";
+	}
+	texTable += "\t\\end{tabular}\n\\end{table}";
+	return texTable;
+}
+
+function delimitedToGraphical(table, delimiter) {
+
+}
+
+function graphicalToTex() {}
+function graphicalToDelimited(){}
+
+$( "#delimitedTable" ).keyup(function() {
+	console.log("Delimited Table Edited");
+	table = $(this).find('pre').text();
+	delimiter = $('#delimiter').val();
+	border = $('#borderSelect').val();
+	console.log("Border " + border);
+	texTable = delimitedToTex(table, delimiter, border);
+	$('#latexTable').find('pre').text(texTable);
+	//Convert data to editable html table
+	//Add to graphical table
+
+	//Convert data to latex (get table settings like border)
+	//Write latex to latexTable
+});
+
+$('#borderSelect').change(function() {
+	console.log("Border prop changed");
+	table = $('#delimitedTable').find('pre').text();
+	delimiter = $('#delimiter').val();
+	border = $('#borderSelect').val();
+	console.log("Border " + border);
+	texTable = delimitedToTex(table, delimiter, border);
+	$('#latexTable').find('pre').text(texTable);
+
+});
+
+</script>
