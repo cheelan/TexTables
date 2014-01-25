@@ -102,23 +102,24 @@ function delimitedToTex(table, delimiter, style) {
 
 $( "#delimitedTable" ).keyup(function() {
 	console.log("Delimited Table Edited");
-	table = $(this).find('pre').text();
-	delimiter = $('#delimiter').val();
-	border = $('#borderSelect').val();
-	console.log("Border " + border);
-	texTable = delimitedToTex(table, delimiter, border);
-	$('#latexTable').find('pre').text(texTable);
+	update();
 });
 
 $('#borderSelect').change(function() {
 	console.log("Border prop changed");
+	update();
+});
+
+$('#delimiter').change(function() {
+	update();
+});
+
+function update() {
 	table = $('#delimitedTable').find('pre').text();
 	delimiter = $('#delimiter').val();
 	border = $('#borderSelect').val();
 	console.log("Border " + border);
 	texTable = delimitedToTex(table, delimiter, border);
 	$('#latexTable').find('pre').text(texTable);
-
-});
-
+}
 </script>
