@@ -14,24 +14,6 @@ I'm editable,I'm also editable
 </pre>
 	</div>
 
-	<h2>Edit Table Graphically</h2>
-	Border:
-	<select id="borderSelect">
-	    <option value="" selected="selected">No Border</option>
-	    <option value="border_around">Borders Around</option>
-	    <option value="all_borders">All Borders</option>
-	</select>
-	<table class="graphical">
-	<tr>
-		<td><div contenteditable>I'm editable</div></td>
-		<td><div contenteditable>I'm also editable</div></td>
-	</tr>
-		<tr>
-		<td><div contenteditable>I'm editable</div></td>
-		<td><div contenteditable>I'm also editable</div></td>
-	</tr>
-	</table>
-
 	<h2>Convert to LaTex</h2>
 	<div contenteditable="true" class="output" id="latexTable">
 <pre>
@@ -73,7 +55,7 @@ function delimitedToTex(table, delimiter, style) {
 		}
 		texRow = texRow.substring(0, texRow.length - 2);
 		texRow += "\\\\"
-		if (style=="all_borders") {
+		if (style == "all_borders") {
 			texRow += ' \\hline';
 		}
 		
@@ -99,7 +81,7 @@ function delimitedToTex(table, delimiter, style) {
 	}
 
 	texTable = "\\begin{table}\n\t\\begin{tabular}{" + ls + "}\n";
-	if (style == "border_around") {
+	if (style == "border_around" || style == "all_borders") {
 		texTable += "\t \\hline \n";
 	}
 	for (var i=0; i<texRows.length; i++) {
@@ -112,13 +94,6 @@ function delimitedToTex(table, delimiter, style) {
 	return texTable;
 }
 
-function delimitedToGraphical(table, delimiter) {
-
-}
-
-function graphicalToTex() {}
-function graphicalToDelimited(){}
-
 $( "#delimitedTable" ).keyup(function() {
 	console.log("Delimited Table Edited");
 	table = $(this).find('pre').text();
@@ -127,11 +102,6 @@ $( "#delimitedTable" ).keyup(function() {
 	console.log("Border " + border);
 	texTable = delimitedToTex(table, delimiter, border);
 	$('#latexTable').find('pre').text(texTable);
-	//Convert data to editable html table
-	//Add to graphical table
-
-	//Convert data to latex (get table settings like border)
-	//Write latex to latexTable
 });
 
 $('#borderSelect').change(function() {
